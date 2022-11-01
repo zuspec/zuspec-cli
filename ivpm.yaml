@@ -1,0 +1,41 @@
+
+package:
+  name: zuspec
+
+  dep-sets:
+
+  - name: default
+    deps: []
+
+  - name: default-dev
+    deps:
+    - name: pytypeworks
+      url: https://github.com/fvutils/pytypeworks.git
+    - name: pyvsc-dataclasses
+      url: https://github.com/vsc-tools/pyvsc-dataclasses.git
+    - name: pyarl-dataclasses
+      url: https://github.com/vsc-tools/pyarl-dataclasses.git
+    - name: libvsc
+      url: https://github.com/vsc-tools/libvsc.git
+    - name: libarl
+      url: https://github.com/vsc-tools/libarl.git
+    - name: fltools
+      url: https://github.com/fvutils/fltools.git
+    - name: fusesoc
+      url: https://github.com/olofk/fusesoc.git
+    - name: Sphinx
+      src: pypi
+    - name: sphinx-argparse
+      src: pypi
+    - name: sphinxcontrib-makedomain
+      src: pypi
+    - name: sphinxcontrib-openapi
+      src: pypi
+    - name: sphinxcontrib-spelling
+      src: pypi
+    - name: sphinx-rtd-theme
+      src: pypi
+    - name: sphinx-jsonschema
+      src: pypi
+
+
