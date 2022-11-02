@@ -26,8 +26,160 @@ class GeneratorDot(libarl.VisitorBase):
 
     def __init__(self, pss_top):
         self.pss_top = pss_top
+        self.output = ""
+        self.ind = ""
+        self._node_id = 0
+        self._last_node_id = 0
+        self._cluster_id = 0
+        self._scope_s = []
         pass
 
-    def gen(self, iterator : libarl.ModelEvalIterator):
+    def gen(self, eval_it : libarl.ModelEvalIterator):
+        self.output = ""
+
+        node = self.node_id
+
+        self.println("digraph A {")
+        self.inc_ind()
+        self.println("n%d[label=\"start\"];", node)
+
+        self._last_node_id = node
+
+        if eval_it.next():
+            self._process_item(eval_it)
+
+        node = self.node_id
+
+        self.println("n%d[label=\"end\"];", node)
+        self.println("n%d -> n%d;", self._last_node_id, node)
+        self.dec_ind()
+        self.println("}")
+
+        return self.output
+
+    def _process_item(self, eval_it):
+        print("_process_item: kind=%s" % eval_it.type())
+
+        if eval_it.type() == libarl.ModelEvalNodeT.Action:
+            is_compound = self.process_action(eval_it.action())
+
+            if is_compound:
+                # Following sequence is the body
+                eval_it.next()
+
+                print("compound kind=%s" % eval_it.type())
+
+                self._process_item(eval_it)
+
+                # Now, close out the compound scope
+                self.dec_ind()
+                self.println("}")
+                self.println("n%d -> n%d;", 
+                    self._last_node_id,
+                    self._scope_s[-1][1])
+                self._last_node_id = self._scope_s[-1][1]
+                self._scope_s.pop()
+
+        elif eval_it.type() == libarl.ModelEvalNodeT.Sequence:
+            self.process_sequence(eval_it.iterator())
+        elif eval_it.type() == libarl.ModelEvalNodeT.Parallel:
+            self.process_parallel(eval_it.iterator())
+        else:
+            raise Exception("Unknown eval node type %s" % eval_it.type())
+
+    def inc_ind(self):
+        self.ind += "    "
+
+    def dec_ind(self):
+        if len(self.ind) > 4:
+            self.ind = self.ind[4:]
+        else:
+            self.ind = ""
+
+    def println(self, fmt, *args):
+        self.output += self.ind
+        self.output += fmt % args
+        self.output += "\n"
+
+    @property
+    def node_id(self):
+        ret = self._node_id
+        self._node_id += 1
+        return ret
+
+    @property
+    def cluster_id(self):
+        ret = self._cluster_id
+        self._cluster_id += 1
+        return ret
+
+    def process_action(self, action : libarl.ModelFieldAction):
+        is_compound = action.isCompound()
+
+        if is_compound:
+            sid = self.node_id
+            eid = self.node_id
+            cid = self.cluster_id
+
+            self.println("n%d -> n%d", self._last_node_id, sid)
+
+            self.println("subgraph cluster%d {", cid)
+            self.inc_ind();
+
+            self.println("label=\"%s\";", action.name())
+            self.println("n%d[shape=point,color=black];", sid)
+            self.println("n%d[shape=point,color=black];", eid)
+
+            self._scope_s.append((sid, eid))
+            self._last_node_id = sid
+        else:
+            node = self.node_id
+            label = action.name()
+
+            self.println("n%d[label=\"%s\"];", node, label)
+
+            self.println("n%d -> n%d;", self._last_node_id, node)
+            self._last_node_id = node
+
+        return is_compound
+
+    def process_parallel(self, eval_it : libarl.ModelEvalIterator):
+        sid = self.node_id
+        eid = self.node_id
+        self.println("n%d[shape=rectangle,width=1.0,height=0.05,label=\"\",style=filled];", sid)
+        self.println("n%d[shape=rectangle,width=1.0,height=0.05,label=\"\",style=filled];", eid)
+
+        if self._last_node_id:
+            self.println("n%0d -> n%0d;", self._last_node_id, sid)
+
+        self._scope_s.append((sid, eid))
+        self._last_node_id = sid
+
+        while eval_it.next():
+            print("Branch: %s" % eval_it.type())
+            # Process a branch
+            self._last_node_id = self._scope_s[-1][0] # Start node
+
+            self._process_item(eval_it)
+
+            # Close out a branch by connecting the last 
+            # action to the close bar
+            self.println("n%0d -> n%0d;", 
+                self._last_node_id,
+                self._scope_s[-1][1])
+            
+        self._last_node_id = self._scope_s[-1][1]
+        self._scope_s.pop()
+
         pass
+
+    def process_sequence(self, eval_it : libarl.ModelEvalIterator):
+        print("process_sequence")
+
+        while eval_it.next():
+            self._process_item(eval_it)
+
+    def visitModelFieldComponent(self, c : libarl.ModelFieldComponent):
+        pass
+
 
