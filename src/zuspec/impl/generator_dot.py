@@ -65,11 +65,12 @@ class GeneratorDot(libarl.VisitorBase):
 
             if is_compound:
                 # Following sequence is the body
-                eval_it.next()
 
                 print("compound kind=%s" % eval_it.type())
 
-                self._process_item(eval_it)
+                activity_it = eval_it.iterator()
+                activity_it.next()
+                self._process_item(activity_it)
 
                 # Now, close out the compound scope
                 self.dec_ind()
@@ -115,6 +116,8 @@ class GeneratorDot(libarl.VisitorBase):
 
     def process_action(self, action : libarl.ModelFieldAction):
         is_compound = action.isCompound()
+
+        print("Action: %s is_compound=%s" % (action.name(), is_compound))
 
         if is_compound:
             sid = self.node_id
