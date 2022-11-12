@@ -2,6 +2,10 @@
 package:
   name: zuspec
 
+  setup-deps:
+  - ninja
+  - cython
+
   dep-sets:
 
   - name: default
@@ -23,6 +27,10 @@ package:
       url: https://github.com/fvutils/fltools.git
     - name: fusesoc
       url: https://github.com/olofk/fusesoc.git
+    - name: ninja
+      src: pypi
+    - name: cython
+      src: pypi
     - name: Sphinx
       src: pypi
     - name: sphinx-argparse
