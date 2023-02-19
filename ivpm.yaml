@@ -17,12 +17,26 @@ package:
       url: https://github.com/fvutils/pytypeworks.git
     - name: pyvsc-dataclasses
       url: https://github.com/vsc-tools/pyvsc-dataclasses.git
-    - name: pyarl-dataclasses
-      url: https://github.com/vsc-tools/pyarl-dataclasses.git
-    - name: libvsc
-      url: https://github.com/vsc-tools/libvsc.git
-    - name: libarl
-      url: https://github.com/vsc-tools/libarl.git
+    - name: zuspec-dataclasses
+      url: https://github.com/zuspec/zuspec-dataclasses.git
+    - name: libvsc-dm
+      url: https://github.com/vsc-tools/libvsc-dm.git
+      branch: dm-refactor
+    - name: libvsc-solvers
+      url: https://github.com/vsc-tools/libvsc-solvers.git
+      branch: dm-refactor
+    - name: zuspec-arl-dm
+      url: https://github.com/zuspec/zuspec-arl-dm.git
+      branch: dm-refactor
+    - name: zuspec-arl-eval
+      url: https://github.com/zuspec/zuspec-arl-eval.git
+      branch: dm-refactor
+    - name: zuspec-parser
+      url: https://github.com/zuspec/zuspec-parser.git
+    - name: zuspec-fe-parser
+      url: https://github.com/zuspec/zuspec-fe-parser.git
+    - name: zuspec-be-sw
+      url: https://github.com/zuspec/zuspec-be-sw.git
     - name: fltools
       url: https://github.com/fvutils/fltools.git
     - name: fusesoc
