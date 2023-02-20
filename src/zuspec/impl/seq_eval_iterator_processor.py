@@ -21,16 +21,16 @@
 #****************************************************************************
 
 import asyncio
-import libarl.core as libarl
+import zsp_arl_dm.core as arl_dm
+from zsp_arl_dm.core import ExecKindT
 
-from arl_dataclasses.impl.exec_kind_e import ExecKindE
 
 class SeqEvalIteratorProcessor(object):
 
     def __init__(self, pss_top):
         self.pss_top = pss_top
 
-    def process(self, eval_it : libarl.ModelEvalIterator):
+    def process(self, eval_it : arl_dm.ModelEvalIterator):
 
         if eval_it.next():
             self._process_item(eval_it)
@@ -38,7 +38,7 @@ class SeqEvalIteratorProcessor(object):
     def _process_item(self, eval_it):
         print("_process_item: kind=%s" % eval_it.type())
 
-        if eval_it.type() == libarl.ModelEvalNodeT.Action:
+        if eval_it.type() == arl_dm.ModelEvalNodeT.Action:
             is_compound = self.process_action(eval_it.action())
 
             if is_compound:
@@ -50,14 +50,14 @@ class SeqEvalIteratorProcessor(object):
                 activity_it.next()
                 self._process_item(activity_it)
 
-        elif eval_it.type() == libarl.ModelEvalNodeT.Sequence:
+        elif eval_it.type() == arl_dm.ModelEvalNodeT.Sequence:
             self.process_sequence(eval_it.iterator())
-        elif eval_it.type() == libarl.ModelEvalNodeT.Parallel:
+        elif eval_it.type() == arl_dm.ModelEvalNodeT.Parallel:
             self.process_parallel(eval_it.iterator())
         else:
             raise Exception("Unknown eval node type %s" % eval_it.type())
 
-    def process_action(self, action : libarl.ModelFieldAction):
+    def process_action(self, action : arl_dm.ModelFieldAction):
         is_compound = action.isCompound()
 
         print("Action: %s is_compound=%s" % (action.name(), is_compound))
@@ -65,11 +65,11 @@ class SeqEvalIteratorProcessor(object):
         if not is_compound:
             action_facade = action.getFieldData()
 
-            asyncio.get_event_loop().run_until_complete(action_facade._evalExecTarget(ExecKindE.Body))
+            asyncio.get_event_loop().run_until_complete(action_facade._evalExecTarget(ExecKindT.Body))
 
         return is_compound
 
-    def process_parallel(self, eval_it : libarl.ModelEvalIterator):
+    def process_parallel(self, eval_it : arl_dm.ModelEvalIterator):
 
         while eval_it.next():
             print("Branch: %s" % eval_it.type())
@@ -77,7 +77,7 @@ class SeqEvalIteratorProcessor(object):
 
             self._process_item(eval_it)
 
-    def process_sequence(self, eval_it : libarl.ModelEvalIterator):
+    def process_sequence(self, eval_it : arl_dm.ModelEvalIterator):
         print("process_sequence")
 
         while eval_it.next():

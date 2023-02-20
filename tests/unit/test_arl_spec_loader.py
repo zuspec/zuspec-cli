@@ -20,7 +20,7 @@
 #*
 #****************************************************************************
 
-import arl_dataclasses
+import zsp_dataclasses
 from tests.unit.test_base import TestBase
 from zuspec.arl_spec_loader import ArlSpecLoader
 

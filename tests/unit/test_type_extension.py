@@ -20,9 +20,11 @@
 #*
 #****************************************************************************
 
-import arl_dataclasses
-import libarl.core as libarl
-import libvsc.core as libvsc
+import zsp_dataclasses
+import zsp_arl_dm.core as arl_dm
+import libvsc_dm.core as vsc_dm
+import libvsc_solvers.core as vsc_solvers
+
 from zuspec.arl_spec_loader import ArlSpecLoader
 from zuspec.impl.generator_dot import GeneratorDot
 from zuspec.impl.seq_eval_iterator_processor import SeqEvalIteratorProcessor
@@ -32,7 +34,7 @@ class TestTypeExtension(TestBase):
 
     def test_smoke(self):
         self.addFile("pss_top.py", self.justify("""
-            import arl_dataclasses as arl
+            import zsp_dataclasses as arl
 
             @arl.component
             class pss_top(object):
@@ -72,16 +74,16 @@ class TestTypeExtension(TestBase):
         loader.load()
 
         # Create an evaluator
-        arl_ctxt = arl_dataclasses.impl.Ctor.inst().ctxt()
+        arl_ctxt = zsp_dataclasses.impl.Ctor.inst().ctxt()
 
-        build_ctxt = libarl.ModelBuildContext(arl_ctxt)
+        build_ctxt = arl_dm.ModelBuildContext(arl_ctxt)
         pss_top_t = arl_ctxt.findDataTypeComponent("pss_top")
         self.assertIsNotNone(pss_top_t)
         pss_top = pss_top_t.mkRootField(build_ctxt, "pss_top", False)
 
         pss_top.initCompTree()
 
-        rs = arl_ctxt.mkRandState("")
+        rs = vsc_solvers.Factory.inst().mkRandState("")
         eval = arl_ctxt.mkModelEvaluator()
         eval_it = eval.eval(
             rs.next(),
@@ -95,7 +97,7 @@ class TestTypeExtension(TestBase):
 
     def test_constraint(self):
         self.addFile("pss_top.py", self.justify("""
-            import arl_dataclasses as arl
+            import zsp_dataclasses as arl
 
             @arl.component
             class pss_top(object):
@@ -136,9 +138,9 @@ class TestTypeExtension(TestBase):
         loader.load()
 
         # Create an evaluator
-        arl_ctxt = arl_dataclasses.impl.Ctor.inst().ctxt()
+        arl_ctxt = zsp_dataclasses.impl.Ctor.inst().ctxt()
 
-        build_ctxt = libarl.ModelBuildContext(arl_ctxt)
+        build_ctxt = arl_dm.ModelBuildContext(arl_ctxt)
         pss_top_t = arl_ctxt.findDataTypeComponent("pss_top")
         self.assertIsNotNone(pss_top_t)
         pss_top = pss_top_t.mkRootField(build_ctxt, "pss_top", False)
@@ -159,7 +161,7 @@ class TestTypeExtension(TestBase):
 
     def test_exec(self):
         self.addFile("pss_top.py", self.justify("""
-            import arl_dataclasses as arl
+            import zsp_dataclasses as arl
 
             @arl.component
             class pss_top(object):
@@ -201,9 +203,9 @@ class TestTypeExtension(TestBase):
         loader.load()
 
         # Create an evaluator
-        arl_ctxt = arl_dataclasses.impl.Ctor.inst().ctxt()
+        arl_ctxt = zsp_dataclasses.impl.Ctor.inst().ctxt()
 
-        build_ctxt = libarl.ModelBuildContext(arl_ctxt)
+        build_ctxt = arl_dm.ModelBuildContext(arl_ctxt)
         pss_top_t = arl_ctxt.findDataTypeComponent("pss_top")
         self.assertIsNotNone(pss_top_t)
         pss_top = pss_top_t.mkRootField(build_ctxt, "pss_top", False)
@@ -224,7 +226,7 @@ class TestTypeExtension(TestBase):
 
     def test_activity(self):
         self.addFile("pss_top.py", self.justify("""
-            import arl_dataclasses as arl
+            import zsp_dataclasses as arl
 
             @arl.component
             class pss_top(object):
@@ -268,16 +270,71 @@ class TestTypeExtension(TestBase):
         loader.load()
 
         # Create an evaluator
-        arl_ctxt = arl_dataclasses.impl.Ctor.inst().ctxt()
+        arl_ctxt = zsp_dataclasses.impl.Ctor.inst().ctxt()
 
-        build_ctxt = libarl.ModelBuildContext(arl_ctxt)
+        build_ctxt = arl_dm.ModelBuildContext(arl_ctxt)
         pss_top_t = arl_ctxt.findDataTypeComponent("pss_top")
         self.assertIsNotNone(pss_top_t)
         pss_top = pss_top_t.mkRootField(build_ctxt, "pss_top", False)
 
         pss_top.initCompTree()
 
-        rs = arl_ctxt.mkRandState("")
+        rs = vsc_solvers.Factory.inst().mkRandState("")
+        eval = arl_ctxt.mkModelEvaluator()
+        eval_it = eval.eval(
+            rs.next(),
+            pss_top,
+            arl_ctxt.findDataTypeAction("pss_top::Entry")
+        )
+
+        eval = SeqEvalIteratorProcessor(pss_top)
+
+        eval.process(eval_it)
+
+    def test_activity_pss(self):
+        self.addFile("pss_top.pss", self.justify("""
+
+            component pss_top {
+
+                action A {
+                    rand bit[16] a;
+                    rand bit[16] b;
+
+                    constraint ab_c {
+                        self.a < self.b;
+                    }
+
+                    exec body {
+                        print("Hello from Body %d %d" % (self.a, self.b));
+                    }
+                }
+
+                action B { }
+
+                action Entry {
+                    do A;
+                    do B;
+                }
+            }
+
+        """))
+
+        loader = ArlSpecLoader()
+        loader.addLoadPss(["pss_top.pss"])
+
+        loader.load()
+
+        # Create an evaluator
+        arl_ctxt = zsp_dataclasses.impl.Ctor.inst().ctxt()
+
+        build_ctxt = arl_dm.ModelBuildContext(arl_ctxt)
+        pss_top_t = arl_ctxt.findDataTypeComponent("pss_top")
+        self.assertIsNotNone(pss_top_t)
+        pss_top = pss_top_t.mkRootField(build_ctxt, "pss_top", False)
+
+        pss_top.initCompTree()
+
+        rs = vsc_solvers.Factory.inst().mkRandState("")
         eval = arl_ctxt.mkModelEvaluator()
         eval_it = eval.eval(
             rs.next(),

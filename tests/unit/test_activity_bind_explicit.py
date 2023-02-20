@@ -20,9 +20,9 @@
 #*
 #****************************************************************************
 
-import libvsc.core as libvsc
-import libarl.core as libarl
-import arl_dataclasses
+import libvsc_dm.core as vsc_dm
+import zsp_arl_dm.core as arl_dm
+import zsp_dataclasses
 from .test_base import TestBase
 from zuspec.impl.generator_dot import GeneratorDot
 from zuspec.arl_spec_loader import ArlSpecLoader
@@ -30,9 +30,9 @@ from zuspec.arl_spec_loader import ArlSpecLoader
 class TestActivityBindExplicit(TestBase):
 
     def test_smoke(self):
-        libvsc.enableDebug(True)
+        vsc_dm.enableDebug(True)
         self.addFile("pss_top.py", self.justify("""
-            import arl_dataclasses as arl
+            import zsp_dataclasses as arl
 
             @arl.buffer
             class Data(object):
@@ -76,9 +76,9 @@ class TestActivityBindExplicit(TestBase):
         loader.load()
 
         # Create an evaluator
-        arl_ctxt = arl_dataclasses.impl.Ctor.inst().ctxt()
+        arl_ctxt = zsp_dataclasses.impl.Ctor.inst().ctxt()
 
-        build_ctxt = libarl.ModelBuildContext(arl_ctxt)
+        build_ctxt = arl_dm.ModelBuildContext(arl_ctxt)
         pss_top_t = arl_ctxt.findDataTypeComponent("pss_top")
         self.assertIsNotNone(pss_top_t)
         pss_top = pss_top_t.mkRootField(build_ctxt, "pss_top", False)

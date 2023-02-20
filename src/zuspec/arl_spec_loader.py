@@ -20,7 +20,7 @@
 #*
 #****************************************************************************
 
-import libarl.core as libarl
+import zsp_arl_dm.core as arl_dm
 import sys
 import importlib
 from typing import List
@@ -42,16 +42,16 @@ class ArlSpecLoader(object):
         self._pythonpath.append(path)
 
     def addLoadPss(self, files : List[str]):
-        spec = ArlSpecLoader.LoadSegementPss()
+        spec = ArlSpecLoader.LoadSegmentPss(self, files)
         self._spec_segments.append(spec)
 
     def load(self):
-        import arl_dataclasses
+        import zsp_dataclasses
 
         for s in self._spec_segments:
             s.load()
 
-        arl_dataclasses.impl.Ctor.inst().elab()
+        zsp_dataclasses.impl.Ctor.inst().elab()
 
     class LoadSegmentPython(object):
 

@@ -4,12 +4,12 @@ class Ctxt(object):
     @classmethod
     def init(cls):
         from vsc_dataclasses.impl import Ctor as VscCtor
-        from arl_dataclasses.impl import Ctor as ArlCtor
-        import libarl.core as libarl
+        from zsp_dataclasses.impl import Ctor as ZspCtor
+        import zsp_arl_dm.core as arl_dm
 
-        ctxt = libarl.Arl.inst().mkContext()
+        ctxt = arl_dm.Factory.inst().mkContext()
 
-        ArlCtor.init(ctxt)
+        ZspCtor.init(ctxt)
         VscCtor.init(ctxt)
 
         pass

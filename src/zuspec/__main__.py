@@ -1,5 +1,5 @@
 #****************************************************************************
-#* my_class.py
+#* __main__.py
 #*
 #* Copyright 2022 Matthew Ballance and Contributors
 #*
@@ -19,6 +19,12 @@
 #*     Author: 
 #*
 #****************************************************************************
+import argparse
+
+def getparser():
+    parser = argparse.ArgumentParser()
+
+    return parser
 
 def main():
     pass

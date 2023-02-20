@@ -20,9 +20,9 @@
 #*
 #****************************************************************************
 
-import arl_dataclasses
-import libarl.core as libarl
-import libvsc.core as libvsc
+import zsp_dataclasses
+import zsp_arl_dm.core as arl_dm
+import libvsc_dm.core as vsc_dm
 from zuspec.arl_spec_loader import ArlSpecLoader
 from zuspec.impl.generator_dot import GeneratorDot
 from .test_base import TestBase
@@ -32,7 +32,7 @@ class TestDotGenerator(TestBase):
 
     def test_smoke(self):
         self.addFile("pss_top.py", self.justify("""
-            import arl_dataclasses as arl
+            import zsp_dataclasses as arl
 
             @arl.component
             class pss_top(object):
@@ -61,7 +61,7 @@ class TestDotGenerator(TestBase):
         loader.load()
 
         # Create an evaluator
-        arl_ctxt = arl_dataclasses.impl.Ctor.inst().ctxt()
+        arl_ctxt = zsp_dataclasses.impl.Ctor.inst().ctxt()
 
         build_ctxt = libarl.ModelBuildContext(arl_ctxt)
         pss_top_t = arl_ctxt.findDataTypeComponent("pss_top")
@@ -85,7 +85,7 @@ class TestDotGenerator(TestBase):
 
     def test_single_level_par(self):
         self.addFile("pss_top.py", self.justify("""
-            import arl_dataclasses as arl
+            import zsp_dataclasses as arl
 
             @arl.component
             class pss_top(object):
@@ -115,7 +115,7 @@ class TestDotGenerator(TestBase):
         loader.load()
 
         # Create an evaluator
-        arl_ctxt = arl_dataclasses.impl.Ctor.inst().ctxt()
+        arl_ctxt = zsp_dataclasses.impl.Ctor.inst().ctxt()
         libvsc.enableDebug(True)
 
         build_ctxt = libarl.ModelBuildContext(arl_ctxt)
@@ -140,7 +140,7 @@ class TestDotGenerator(TestBase):
 
     def test_two_level_compound(self):
         self.addFile("pss_top.py", self.justify("""
-            import arl_dataclasses as arl
+            import zsp_dataclasses as arl
 
             @arl.component
             class pss_top(object):
@@ -179,7 +179,7 @@ class TestDotGenerator(TestBase):
         loader.load()
 
         # Create an evaluator
-        arl_ctxt = arl_dataclasses.impl.Ctor.inst().ctxt()
+        arl_ctxt = zsp_dataclasses.impl.Ctor.inst().ctxt()
         libvsc.enableDebug(True)
 
         build_ctxt = libarl.ModelBuildContext(arl_ctxt)

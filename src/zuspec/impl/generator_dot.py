@@ -20,9 +20,9 @@
 #*
 #****************************************************************************
 
-import libarl.core as libarl
+import zsp_arl_dm.core as arl_dm
 
-class GeneratorDot(libarl.VisitorBase):
+class GeneratorDot(arl_dm.VisitorBase):
 
     def __init__(self, pss_top):
         self.pss_top = pss_top
@@ -34,7 +34,7 @@ class GeneratorDot(libarl.VisitorBase):
         self._scope_s = []
         pass
 
-    def gen(self, eval_it : libarl.ModelEvalIterator):
+    def gen(self, eval_it : arl_dm.ModelEvalIterator):
         self.output = ""
 
         node = self.node_id
@@ -60,7 +60,7 @@ class GeneratorDot(libarl.VisitorBase):
     def _process_item(self, eval_it):
         print("_process_item: kind=%s" % eval_it.type())
 
-        if eval_it.type() == libarl.ModelEvalNodeT.Action:
+        if eval_it.type() == arl_dm.ModelEvalNodeT.Action:
             is_compound = self.process_action(eval_it.action())
 
             if is_compound:
@@ -81,9 +81,9 @@ class GeneratorDot(libarl.VisitorBase):
                 self._last_node_id = self._scope_s[-1][1]
                 self._scope_s.pop()
 
-        elif eval_it.type() == libarl.ModelEvalNodeT.Sequence:
+        elif eval_it.type() == arl_dm.ModelEvalNodeT.Sequence:
             self.process_sequence(eval_it.iterator())
-        elif eval_it.type() == libarl.ModelEvalNodeT.Parallel:
+        elif eval_it.type() == arl_dm.ModelEvalNodeT.Parallel:
             self.process_parallel(eval_it.iterator())
         else:
             raise Exception("Unknown eval node type %s" % eval_it.type())
@@ -114,7 +114,7 @@ class GeneratorDot(libarl.VisitorBase):
         self._cluster_id += 1
         return ret
 
-    def process_action(self, action : libarl.ModelFieldAction):
+    def process_action(self, action : arl_dm.ModelFieldAction):
         is_compound = action.isCompound()
 
         print("Action: %s is_compound=%s" % (action.name(), is_compound))
@@ -146,7 +146,7 @@ class GeneratorDot(libarl.VisitorBase):
 
         return is_compound
 
-    def process_parallel(self, eval_it : libarl.ModelEvalIterator):
+    def process_parallel(self, eval_it : arl_dm.ModelEvalIterator):
         sid = self.node_id
         eid = self.node_id
         self.println("n%d[shape=rectangle,width=1.0,height=0.05,label=\"\",style=filled];", sid)
@@ -176,13 +176,13 @@ class GeneratorDot(libarl.VisitorBase):
 
         pass
 
-    def process_sequence(self, eval_it : libarl.ModelEvalIterator):
+    def process_sequence(self, eval_it : arl_dm.ModelEvalIterator):
         print("process_sequence")
 
         while eval_it.next():
             self._process_item(eval_it)
 
-    def visitModelFieldComponent(self, c : libarl.ModelFieldComponent):
+    def visitModelFieldComponent(self, c : arl_dm.ModelFieldComponent):
         pass
 
 
