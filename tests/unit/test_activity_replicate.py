@@ -22,7 +22,7 @@
 
 import zsp_dataclasses
 import zsp_arl_dm.core as arl_dm
-import libvsc_dm.core as vsc_dm
+import vsc_dm.core as vsc_dm
 from zuspec.arl_spec_loader import ArlSpecLoader
 from zuspec.impl.generator_dot import GeneratorDot
 from .test_base import TestBase

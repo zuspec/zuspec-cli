@@ -22,8 +22,8 @@
 
 import zsp_dataclasses
 import zsp_arl_dm.core as arl_dm
-import libvsc_dm.core as vsc_dm
-import libvsc_solvers.core as vsc_solvers
+import vsc_dm.core as vsc_dm
+import vsc_solvers.core as vsc_solvers
 
 from zuspec.arl_spec_loader import ArlSpecLoader
 from zuspec.impl.generator_dot import GeneratorDot

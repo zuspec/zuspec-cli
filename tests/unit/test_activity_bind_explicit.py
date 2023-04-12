@@ -20,7 +20,7 @@
 #*
 #****************************************************************************
 
-import libvsc_dm.core as vsc_dm
+import vsc_dm.core as vsc_dm
 import zsp_arl_dm.core as arl_dm
 import zsp_dataclasses
 from .test_base import TestBase

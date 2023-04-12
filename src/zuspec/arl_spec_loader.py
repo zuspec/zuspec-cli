@@ -21,16 +21,18 @@
 #****************************************************************************
 
 import zsp_arl_dm.core as arl_dm
+import zsp_fe_parser.core as zsp_fe_parser
 import sys
 import importlib
 from typing import List
+import zsp_parser.core as zspp
 
 class ArlSpecLoader(object):
     """Loads an ARL specification from a mix of inputs"""
 
     def __init__(self):
         self._spec_segments = []
-#        self._ctxt = libarl.ArlImpl().mkContext()
+        self._ctxt = arl_dm.Factory.inst().mkContext()
         self._pythonpath = []
         pass
 
@@ -87,7 +89,47 @@ class ArlSpecLoader(object):
             self.files = files.copy()
 
         def load(self):
-            raise NotImplementedError("LoadSegmentPss.load")
+            zspp_f = zspp.Factory.inst()
+            ast_f = zspp_f.getAstFactory()
+            marker_c = zspp_f.mkMarkerCollector()
+
+            ast_builder = zspp_f.mkAstBuilder(marker_c)
+            ast_linker = zspp_f.mkAstLinker()
+
+            scopes = []
+
+            scope = ast_f.mkGlobalScope(len(scopes))
+            zspp_f.loadStandardLibrary(ast_builder, scope)
+            scopes.append(scope)
+
+            for file in self.files:
+                scope = ast_f.mkGlobalScope(len(scopes))
+
+                with open(file, "r") as fp:
+                    ast_builder.build(scope, fp)
+
+                scopes.append(scope)
+
+                if marker_c.hasSeverity(zspp.MarkerSeverityE.Error):
+                    break
+
+            if marker_c.hasSeverity(zspp.MarkerSeverityE.Error):
+                raise Exception("Syntax error")
+                return
+
+            link_root = ast_linker.link(marker_c, scopes)
+
+            if marker_c.hasSeverity(zspp.MarkerSeverityE.Error):
+                raise Exception("Link error")
+                return
+
+            zsp_arl_f = arl_dm.Factory.inst()
+            ast2arl_ctxt = zsp_fe_parser.Factory.inst().mkAst2ArlContext(
+                self.loader._ctxt,
+                marker_c)
+
+            ast2arl_builder = zsp_fe_parser.Factory.inst().mkAst2ArlBuilder()
+            ast2arl_builder.build(link_root, ast2arl_ctxt)
             pass
 
 
