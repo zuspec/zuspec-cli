@@ -19,18 +19,14 @@ package:
       url: https://github.com/vsc-tools/pyvsc-dataclasses.git
     - name: zuspec-dataclasses
       url: https://github.com/zuspec/zuspec-dataclasses.git
-    - name: libvsc-dm
-      url: https://github.com/vsc-tools/libvsc-dm.git
-      branch: dm-refactor
-    - name: libvsc-solvers
-      url: https://github.com/vsc-tools/libvsc-solvers.git
-      branch: dm-refactor
+    - name: vsc-dm
+      url: https://github.com/vsc-tools/vsc-dm.git
+    - name: vsc-solvers
+      url: https://github.com/vsc-tools/vsc-solvers.git
     - name: zuspec-arl-dm
       url: https://github.com/zuspec/zuspec-arl-dm.git
-      branch: dm-refactor
     - name: zuspec-arl-eval
       url: https://github.com/zuspec/zuspec-arl-eval.git
-      branch: dm-refactor
     - name: zuspec-parser
       url: https://github.com/zuspec/zuspec-parser.git
     - name: zuspec-fe-parser
@@ -41,6 +37,8 @@ package:
       url: https://github.com/fvutils/fltools.git
     - name: fusesoc
       url: https://github.com/olofk/fusesoc.git
+    - name: ivpm
+      src: pypi
     - name: ninja
       src: pypi
     - name: cython
