@@ -22,6 +22,7 @@
 
 import os
 import shutil
+import debug_mgr.core as dmgr
 from unittest import TestCase
 
 
@@ -32,6 +33,9 @@ class TestBase(TestCase):
         tests_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         self.rundir = os.path.join(tests_dir, "rundir")
         self.testdir = os.path.join(self.rundir, "_".join(self.id().split('.')))
+
+        self._dmgr = dmgr.Factory.inst().getDebugMgr()
+        self._dmgr.enable(False)
 
         Ctxt.init()
 
@@ -60,6 +64,9 @@ class TestBase(TestCase):
 
         with open(full_path, "w") as fp:
             fp.write(content)
+
+    def enableDebug(self, en):
+        self._dmgr.enable(en)
 
     def justify(self, content):
         """Trim extraneous whitespace"""

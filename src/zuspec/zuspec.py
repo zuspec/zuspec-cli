@@ -1,5 +1,5 @@
 #****************************************************************************
-#* __main__.py
+#* zuspec.py
 #*
 #* Copyright 2022 Matthew Ballance and Contributors
 #*
@@ -19,30 +19,20 @@
 #*     Author: 
 #*
 #****************************************************************************
-import argparse
+import zsp_arl_dm.core as arl_dm
 
-def getparser():
-    parser = argparse.ArgumentParser()
-    subparsers = parser.add_subparsers()
-    subparsers.required = True
+class ZuspecMeta(type):
+    def __init__(self, name, bases, dict):
+        self._ctxt = None
+        pass
 
-    synth_cmd = subparsers.add_parser("synth",
-        help="Process PSS and generate synthesized output")
-    synth_cmd.add_argument("style", 
-        choices={"c-test", "c-actions"},
-        help="Specifies output generator")
-    synth_cmd.set_defaults(func=None)
-    synth_cmd.add_argument("args", nargs=argparse.REMAINDER)
+    @property
+    def context(self):
+        if self._ctxt is None:
+            self._ctxt = arl_dm.Factory.inst().mkContext()
+        return self._ctxt
 
-    return parser
 
-def main():
-    parser = getparser()
-
-    args = parser.parse_args()
-
+class Zuspec(metaclass=ZuspecMeta):
     pass
 
-
-if __name__ == "__main__":
-    main()

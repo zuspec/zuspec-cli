@@ -20,6 +20,7 @@
 #*
 #****************************************************************************
 
+import zuspec
 import zsp_arl_dm.core as arl_dm
 import zsp_fe_parser.core as zsp_fe_parser
 import sys
@@ -30,11 +31,18 @@ import zsp_parser.core as zspp
 class ArlSpecLoader(object):
     """Loads an ARL specification from a mix of inputs"""
 
-    def __init__(self):
+    def __init__(self, ctxt=None):
         self._spec_segments = []
-        self._ctxt = arl_dm.Factory.inst().mkContext()
+        if ctxt is None:
+            self._ctxt = zuspec.Zuspec.context;
+        else:
+            self._ctxt = ctxt
         self._pythonpath = []
         pass
+
+    @property
+    def ctxt(self):
+        return self._ctxt
 
     def addLoadPyModule(self, module):
         spec = ArlSpecLoader.LoadSegmentPython(self, module)

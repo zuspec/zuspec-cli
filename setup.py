@@ -19,7 +19,7 @@ setup(
   Co-specification of hardware, software, design, and test behavior
   """,
   license = "Apache 2.0",
-  keywords = ["SystemVerilog", "Verilog", "RTL", "GoogleTest"],
+  keywords = ["PSS", "Functional Verification", "RTL", "Verilog", "SystemVerilog"],
   url = "https://github.com/zuspec/zuspec",
   entry_points={
     'console_scripts': [
@@ -32,7 +32,8 @@ setup(
   install_requires=[
     'pytypeworks',
     'pyarl-dataclasses',
-    'libarl',
+    'zuspec-arl-dm',
+    'zuspec-arl-eval',
     'fltools',
     'fusesoc',
     'pyyaml'
