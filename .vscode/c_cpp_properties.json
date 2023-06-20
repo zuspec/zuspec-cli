@@ -4,10 +4,11 @@
             "name": "Default",
             "includePath": [
                 "${default}",
-                "packages/libvsc/src",
-                "packages/libvsc/src/include",
-                "packages/libarl/src",
-                "packages/libarl/src/include"
+                "packages/vsc-dm/src/include",
+                "packages/vsc-solvers/src/include",
+                "packages/zuspec-arl-dm/src/include",
+                "packages/zuspec-arl-eval/src/include",
+                "packages/zuspec-parser/build/include"
             ],
             "defines": [
                 "${default}"
@@ -24,11 +25,7 @@
                 "limitSymbolsToIncludedHeaders": true,
                 "databaseFilename": "${default}",
                 "path": [
-                    "${default}",
-                    "packages/libvsc/src",
-                    "packages/libvsc/src/include",
-                    "packages/libarl/src",
-                    "packages/libarl/src/include"
+                    "${default}"
                 ]
             },
             "intelliSenseMode": "${default}",

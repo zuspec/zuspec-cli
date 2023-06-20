@@ -11,21 +11,21 @@ count=`expr $count + $pyvsc_py`
 pyarl_py=$(cat $(find packages/zuspec-dataclasses/src -name '*.py') | wc -l)
 count=`expr $count + $pyarl_py`
 
-libvsc_h=$(cat $(find packages/libvsc-dm/src -name '*.h') | wc -l)
-libvsc_cpp=$(cat $(find packages/libvsc-dm/src -name '*.cpp') | wc -l)
-libvsc_py=$(cat $(find packages/libvsc-dm/python -name '*.p*') | wc -l)
+vsc_h=$(cat $(find packages/vsc-dm/src -name '*.h') | wc -l)
+vsc_cpp=$(cat $(find packages/vsc-dm/src -name '*.cpp') | wc -l)
+vsc_py=$(cat $(find packages/vsc-dm/python -name '*.p*') | wc -l)
 
-count=`expr $count + $libvsc_h`
-count=`expr $count + $libvsc_cpp`
-count=`expr $count + $libvsc_py`
+count=`expr $count + $vsc_h`
+count=`expr $count + $vsc_cpp`
+count=`expr $count + $vsc_py`
 
-libvsc_solvers_h=$(cat $(find packages/libvsc-solvers/src -name '*.h') | wc -l)
-libvsc_solvers_cpp=$(cat $(find packages/libvsc-solvers/src -name '*.cpp') | wc -l)
-libvsc_solvers_py=$(cat $(find packages/libvsc-solvers/python -name '*.p*') | wc -l)
+vsc_solvers_h=$(cat $(find packages/vsc-solvers/src -name '*.h') | wc -l)
+vsc_solvers_cpp=$(cat $(find packages/vsc-solvers/src -name '*.cpp') | wc -l)
+vsc_solvers_py=$(cat $(find packages/vsc-solvers/python -name '*.p*') | wc -l)
 
-count=`expr $count + $libvsc_solvers_h`
-count=`expr $count + $libvsc_solvers_cpp`
-count=`expr $count + $libvsc_solvers_py`
+count=`expr $count + $vsc_solvers_h`
+count=`expr $count + $vsc_solvers_cpp`
+count=`expr $count + $vsc_solvers_py`
 
 zsp_arl_dm_h=$(cat $(find packages/zuspec-arl-dm/src -name '*.h') | wc -l)
 zsp_arl_dm_cpp=$(cat $(find packages/zuspec-arl-dm/src -name '*.cpp') | wc -l)

@@ -8,6 +8,7 @@ export PYTHONPATH=${zuspec_dir}/src:${zuspec_dir}/tests
 
 #GDB="gdb --args "
 #VALGRIND="valgrind --tool=memcheck "
+#export PYTHONMALLOC=malloc
 
-$GDB $VALGRIND ${zuspec_dir}/packages/python/bin/python -m unittest unit.test_py_user_api.TestPyUserApi.test_dotgen
+$GDB $VALGRIND ${zuspec_dir}/packages/python/bin/python -m unittest unit.test_model_eval.TestModelEval.test_smoke
 

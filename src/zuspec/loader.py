@@ -42,7 +42,6 @@ class Loader(object):
         roots = []
 
         # First, load up the core package
-
         scope = self._ast_f.mkGlobalScope(len(roots));
         self._zspp_f.loadStandardLibrary(
             ast_builder,
@@ -77,6 +76,9 @@ class Loader(object):
                 s.close()
 
             if marker_c.hasSeverity(zspp.MarkerSeverityE.Error):
+                for m in marker_c.markers():
+                    print("Marker: %s" % m.msg())
+                    
                 raise Exception("Errors while parsing %s" % name)
 
         ast_linker = self._zspp_f.mkAstLinker()
@@ -84,7 +86,11 @@ class Loader(object):
         root_symtab = ast_linker.link(marker_c, roots)
 
         if marker_c.hasSeverity(zspp.MarkerSeverityE.Error):
-            raise Exception("Errors while parsing %s" % name)
+            if marker_c.hasSeverity(zspp.MarkerSeverityE.Error):
+                for m in marker_c.markers():
+                    print("Marker: %s" % m.msg())
+
+            raise Exception("Errors while linking %s" % name)
 
         zsp_arl_f = arl_dm.Factory.inst()
         ast2arl_ctxt = zsp_fe_parser.Factory.inst().mkAst2ArlContext(
@@ -95,7 +101,11 @@ class Loader(object):
         ast2arl_builder.build(root_symtab, ast2arl_ctxt)
 
         if marker_c.hasSeverity(zspp.MarkerSeverityE.Error):
-            raise Exception("Errors while parsing %s" % name)
+            if marker_c.hasSeverity(zspp.MarkerSeverityE.Error):
+                for m in marker_c.markers():
+                    print("Marker: %s" % m.msg())
+
+            raise Exception("Errors while elaborating %s" % name)
 
         return ctxt
 
