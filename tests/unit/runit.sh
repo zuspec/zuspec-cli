@@ -10,5 +10,5 @@ export PYTHONPATH=${zuspec_dir}/src:${zuspec_dir}/tests
 #VALGRIND="valgrind --tool=memcheck "
 #export PYTHONMALLOC=malloc
 
-$GDB $VALGRIND ${zuspec_dir}/packages/python/bin/python -m unittest unit.test_model_eval.TestModelEval.test_smoke
+$GDB $VALGRIND ${zuspec_dir}/packages/python/bin/python -m unittest unit.test_model_eval.TestModelEval.test_runner_basics
 

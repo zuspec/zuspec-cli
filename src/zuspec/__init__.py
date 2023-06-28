@@ -23,6 +23,7 @@ import io
 import os
 #from .loader import *
 #from .zuspec import *
+from .runner import Runner
 
 def _init():
     """Initializes libraries used by Zuspec"""

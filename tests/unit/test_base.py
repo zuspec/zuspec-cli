@@ -37,7 +37,7 @@ class TestBase(TestCase):
         self._dmgr = dmgr.Factory.inst().getDebugMgr()
         self._dmgr.enable(False)
 
-        Ctxt.init()
+        Ctxt.inst()
 
         if os.path.isdir(self.testdir):
             shutil.rmtree(self.testdir)

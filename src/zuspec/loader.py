@@ -27,13 +27,16 @@ import zsp_parser.core as zspp
 
 class Loader(object):
 
-    def __init__(self):
+    def __init__(self, ctxt=None):
+        if ctxt is None:
+            self.ctxt = arl_dm.Factory.inst().mkContext()
+        else:
+            self.ctxt = ctxt
         self._zspp_f = zspp.Factory.inst()
         self._ast_f = self._zspp_f.getAstFactory()
         pass
 
     def load(self, *args, **kwargs):
-        ctxt = arl_dm.Factory.inst().mkContext()
 
         marker_c = self._zspp_f.mkMarkerCollector()
 
@@ -86,15 +89,15 @@ class Loader(object):
         root_symtab = ast_linker.link(marker_c, roots)
 
         if marker_c.hasSeverity(zspp.MarkerSeverityE.Error):
-            if marker_c.hasSeverity(zspp.MarkerSeverityE.Error):
-                for m in marker_c.markers():
-                    print("Marker: %s" % m.msg())
+            for m in marker_c.markers():
+                print("Marker: %s" % m.msg())
 
             raise Exception("Errors while linking %s" % name)
 
         zsp_arl_f = arl_dm.Factory.inst()
         ast2arl_ctxt = zsp_fe_parser.Factory.inst().mkAst2ArlContext(
-            ctxt,
+            self.ctxt,
+            root_symtab,
             marker_c)
         
         ast2arl_builder = zsp_fe_parser.Factory.inst().mkAst2ArlBuilder()
@@ -107,7 +110,7 @@ class Loader(object):
 
             raise Exception("Errors while elaborating %s" % name)
 
-        return ctxt
+        return self.ctxt
 
 
 
