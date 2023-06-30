@@ -1,5 +1,5 @@
 #****************************************************************************
-#* runner_backend_async_io.py
+#* task_build_task_caller.py
 #*
 #* Copyright 2022 Matthew Ballance and Contributors
 #*
@@ -19,25 +19,17 @@
 #*     Author: 
 #*
 #****************************************************************************
-import asyncio
-from .runner_backend import RunnerBackend
+import zsp_arl_dm.core as arl_dm
+from .task_caller import TaskCaller
 
-class RunnerBackendAsyncIO(RunnerBackend):
+class TaskBuildTaskCaller(object):
 
     def __init__(self):
-        self.loop = asyncio.get_event_loop()
         pass
 
-    def start(self, coro):
-        return asyncio.Task(coro)
-
-    def taskIsDone(self, coro):
-        return coro.done()
-    
-    async def joinAny(self, coros):
-        await asyncio.wait(coros)
-    
-    def mkEvent(self):
-        return asyncio.Event(loop=self.loop)
-
+    def build(self, 
+              func_t : arl_dm.DataTypeFunction,
+              func : callable):
+        print("isTarget: %d" % func_t.isTarget())
+        return TaskCaller(func, func_t.isTarget())
 

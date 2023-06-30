@@ -1,5 +1,5 @@
 #****************************************************************************
-#* runner_backend_async_io.py
+#* task_build_param_xformer.py
 #*
 #* Copyright 2022 Matthew Ballance and Contributors
 #*
@@ -19,25 +19,11 @@
 #*     Author: 
 #*
 #****************************************************************************
-import asyncio
-from .runner_backend import RunnerBackend
 
-class RunnerBackendAsyncIO(RunnerBackend):
+import zsp_arl_dm.core as arl_dm
 
-    def __init__(self):
-        self.loop = asyncio.get_event_loop()
+class TaskBuildParamXformer(arl_dm.VisitorBase):
+
+    def build(self):
         pass
-
-    def start(self, coro):
-        return asyncio.Task(coro)
-
-    def taskIsDone(self, coro):
-        return coro.done()
-    
-    async def joinAny(self, coros):
-        await asyncio.wait(coros)
-    
-    def mkEvent(self):
-        return asyncio.Event(loop=self.loop)
-
 

@@ -11,7 +11,9 @@
                 "packages/zuspec-arl-eval/src/include",
                 "packages/zuspec-fe-parser/src/include",
                 "packages/zuspec-parser/build/include",
-                "packages/zuspec-parser/build/src/antlr4cpp_generated_src"
+                "packages/zuspec-parser/src",
+                "packages/zuspec-parser/build/src/antlr4cpp_generated_src/PSSParser",
+                "packages/zuspec-parser/build/src/antlr4cpp_generated_src/PSSLexer"
             ],
             "defines": [
                 "${default}"

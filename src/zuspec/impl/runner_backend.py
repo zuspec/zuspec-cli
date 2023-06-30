@@ -28,7 +28,10 @@ class RunnerBackend(object):
     def start(self, coro):
         raise NotImplementedError("RunnerBackend.start")
     
-    async def join(self, coro):
+    def taskIsDone(self, coro):
+        raise NotImplementedError("RunnerBackend.taskIsDone")
+    
+    async def joinAny(self, coros):
         raise NotImplementedError("RunnerBackend.join")
     
     def mkEvent(self):

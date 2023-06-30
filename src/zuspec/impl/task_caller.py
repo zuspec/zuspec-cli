@@ -35,22 +35,27 @@ class TaskCaller(object):
         pass
 
     def call(self, thread, params):
-        runner = thread.getThreadId()
-
         func_params = []
         for i,p in enumerate(params):
             func_params.append(self._param_xformers[i](p))
 
-        if self._is_async:
-            runner.queue_call(
-                DeferredTaskCaller(self._func, func_params, self._ret_xformer))
+        ret = self._func(*func_params)
+
+        if self._ret_xformer is not None:
+            ret = self._ret_xformer(thread, ret)
+            thread.setResult(ret)
         else:
-            ret = self._func(func_params)
+            thread.setResult(thread.mkEvalResultKind(zsp_eval.EvalResultKind.Void))
 
-            if self._ret_xformer is not None:
-                ret = self._ret_xformer(thread, ret)
-                thread.setResult(ret)
-            else:
-                thread.setResult(thread.mkEvalResultKind(zsp_eval.EvalResultKind.Void))
-        pass
+    async def call_target(self, thread, params):
+        func_params = []
+        for i,p in enumerate(params):
+            func_params.append(self._param_xformers[i](p))
 
+        ret = await self._func(*func_params)
+
+        if self._ret_xformer is not None:
+            ret = self._ret_xformer(thread, ret)
+            thread.setResult(ret)
+        else:
+            thread.setResult(thread.mkEvalResultKind(zsp_eval.EvalResultKind.Void))

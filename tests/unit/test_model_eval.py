@@ -46,7 +46,7 @@ class TestModelEval(TestBase):
         }
         """
 
-        self.enableDebug(True)
+        self.enableDebug(False)
 
         loader = Loader()
         ctxt = loader.load(content)
@@ -106,10 +106,9 @@ class TestModelEval(TestBase):
 
         pass
 
-    def test_runner_basics(self):
+    def test_runner_basics_solve(self):
         content = """
-        function void doit();
-        import function doit;
+        import solve function void doit();
 
         component pss_top {
             action Entry { 
@@ -120,8 +119,196 @@ class TestModelEval(TestBase):
         }
         """
 
-        async def doit():
+        doit_called = 0
+
+        def doit():
+            nonlocal doit_called
             print("doit")
+            doit_called += 1
+
+        self.enableDebug(False)
+
+        loader = Loader()
+        ctxt = loader.load(content)
+
+        backend = RunnerBackendAsyncIO()
+
+        runner = zuspec.Runner(
+            "pss_top",
+            None,
+            ctxt=ctxt,
+            backend=backend)
+
+        loop = asyncio.get_event_loop()
+
+        loop.run_until_complete(runner.run("pss_top::Entry"))
+
+        self.assertEqual(doit_called, 1)
+
+    def test_runner_basics_target(self):
+        content = """
+//        function void doit();
+        import target function void doit();
+
+        component pss_top {
+            action Entry { 
+                exec body {
+                    doit();
+                }
+            }
+        }
+        """
+
+        doit_called = 0
+
+        async def doit():
+            nonlocal doit_called
+            print("doit")
+            doit_called += 1
+
+        self.enableDebug(False)
+
+        loader = Loader()
+        ctxt = loader.load(content)
+
+        backend = RunnerBackendAsyncIO()
+
+        runner = zuspec.Runner(
+            "pss_top",
+            None,
+            ctxt=ctxt,
+            backend=backend)
+
+        loop = asyncio.get_event_loop()
+
+        loop.run_until_complete(runner.run("pss_top::Entry"))
+
+        self.assertEqual(doit_called, 1)
+
+        print("-- Test Done --")
+
+    def test_runner_simple_sequence_solve(self):
+        content = """
+//        function void doit();
+        import solve function void doit();
+
+        component pss_top {
+            action A { 
+                exec body {
+                    doit();
+                }
+            }
+            action Entry {
+                activity {
+                    do A;
+                    do A;
+                }
+            }
+        }
+        """
+
+        doit_called = 0
+
+        def doit():
+            nonlocal doit_called
+            print("doit")
+            doit_called += 1
+
+        self.enableDebug(False)
+
+        loader = Loader()
+        ctxt = loader.load(content)
+
+        backend = RunnerBackendAsyncIO()
+
+        runner = zuspec.Runner(
+            "pss_top",
+            None,
+            ctxt=ctxt,
+            backend=backend)
+
+        loop = asyncio.get_event_loop()
+
+        loop.run_until_complete(runner.run("pss_top::Entry"))
+
+        self.assertEqual(doit_called, 2)
+
+        print("-- Test Done --")
+
+    def test_runner_simple_sequence_target(self):
+        content = """
+        import target function void doit();
+
+        component pss_top {
+            action A { 
+                exec body {
+                    doit();
+                }
+            }
+            action Entry {
+                activity {
+                    do A;
+                    do A;
+                }
+            }
+        }
+        """
+
+        doit_called = 0
+
+        async def doit():
+            nonlocal doit_called
+            print("doit")
+            doit_called += 1
+
+        self.enableDebug(False)
+
+        loader = Loader()
+        ctxt = loader.load(content)
+
+        backend = RunnerBackendAsyncIO()
+
+        runner = zuspec.Runner(
+            "pss_top",
+            None,
+            ctxt=ctxt,
+            backend=backend)
+
+        loop = asyncio.get_event_loop()
+
+        loop.run_until_complete(runner.run("pss_top::Entry"))
+
+        self.assertEqual(doit_called, 2)
+
+        print("-- Test Done --")
+
+    def test_runner_simple_parallel_target(self):
+        content = """
+        import target function void doit();
+
+        component pss_top {
+            action A { 
+                exec body {
+                    doit();
+                }
+            }
+            action Entry {
+                activity {
+                    parallel {
+                        do A;
+                        do A;
+                    }
+                }
+            }
+        }
+        """
+
+        doit_called = 0
+
+        async def doit():
+            nonlocal doit_called
+            print("doit")
+            doit_called += 1
 
         self.enableDebug(True)
 
@@ -139,6 +326,7 @@ class TestModelEval(TestBase):
         loop = asyncio.get_event_loop()
 
         loop.run_until_complete(runner.run("pss_top::Entry"))
-        
 
+        self.assertEqual(doit_called, 2)
 
+        print("-- Test Done --")

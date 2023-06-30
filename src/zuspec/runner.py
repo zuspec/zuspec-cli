@@ -20,8 +20,11 @@
 #*
 #****************************************************************************
 from .impl.ctxt import Ctxt
+from .impl.deferred_task_caller import DeferredTaskCaller
 from .impl.runner_thread import RunnerThread
 from .impl.task_caller import TaskCaller
+from .impl.task_build_task_caller import TaskBuildTaskCaller
+import asyncio
 import inspect
 import vsc_solvers.core as vsc_solvers
 import zsp_arl_dm.core as arl_dm
@@ -50,6 +53,8 @@ class Runner(arl_eval.EvalBackend):
         self._backend = backend
         self._executor_if = executor_if
         self._executor_func_m = {}
+        self._thread_data = []
+        self._active_coroutines = []
 
         pss_top_t = self._ctxt.findDataTypeComponent(root_comp)
         if pss_top_t is None:
@@ -83,6 +88,27 @@ class Runner(arl_eval.EvalBackend):
             root_action_t,
             self)
 
+        self.map_functions(evaluator)
+
+        while evaluator.eval():
+            if len(self._active_coroutines) == 0:
+                if evaluator.eval():
+                    raise Exception("stall during execution")
+            else:
+                await self._backend.joinAny(self._active_coroutines)
+
+                tmp = self._active_coroutines
+                self._active_coroutines = []
+                for t in tmp:
+                    if not self._backend.taskIsDone(t):
+                        self._active_coroutines.append(t)
+
+        if len(self._active_coroutines) > 0:
+            raise Exception("runner ending with active coroutines")
+        
+        print("<-- run")
+
+    def map_functions(self, evaluator):
         if self._executor_if is None:
             self._executor_func_m[None] = {}
             func_m = self._executor_func_m[None]
@@ -95,16 +121,14 @@ class Runner(arl_eval.EvalBackend):
                         self._executor_func_m[None]
                         # TODO: should probably check args
                         print("Found in locals")
-                        func_m[f.name()] = caller_f.f_locals[f.name()]
+                        assoc_data = TaskBuildTaskCaller().build(
+                                f, caller_f.f_locals[f.name()])
+                        f.setAssociatedData(assoc_data)
                     elif f.name() in caller_f.f_globals.keys():
                         print("Found in globals")
                     caller_f = caller_f.f_back
         else:
             print("TODO: search executors")
-
-        while evaluator.eval():
-            print("Await")
-            break
 
     def enterThreads(self, threads):
         print("enterThreads")
@@ -114,13 +138,11 @@ class Runner(arl_eval.EvalBackend):
 
     def enterThread(self, thread):
         print("enterThread")
-
-        if thread.getThreadId() is None:
-            print("TODO: Add thread data")
-            thread.setThreadId(RunnerThread(self._backend))
+        pass
 
     def leaveThread(self, thread):
         print("leaveThread")
+        pass
 
     def enterAction(self, thread, action):
         print("enterAction: %s" % action.name())
@@ -133,8 +155,13 @@ class Runner(arl_eval.EvalBackend):
         task_caller = func_t.getAssociatedData()
 
         if task_caller is not None:
-            task_caller.call(thread, params)
             print("Invoking the function")
+            if task_caller._is_async:
+                self._active_coroutines.append(
+                    self._backend.start(
+                        task_caller.call_target(thread, params)))
+            else:
+                task_caller.call(thread, params)
         else:
             print("No task caller")
 

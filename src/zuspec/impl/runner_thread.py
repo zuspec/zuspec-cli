@@ -26,11 +26,17 @@ class RunnerThread(object):
 
     def __init__(self, backend : RunnerBackend):
         self.backend = backend
+        self.changed = backend.mkEvent()
         self.event = backend.mkEvent()
         self.queue = []
 
-        self.backend.start(self.run())
+        self.run_task = self.backend.start(self.run())
         pass
+
+    def queue_call(self, caller):
+        print("-- queue_call")
+        self.queue.append(caller)
+        self.event.set()
 
     async def run(self):
         while True:
@@ -40,9 +46,13 @@ class RunnerThread(object):
 
             caller = self.queue.pop(0)
 
+            print("caller: %s" % str(caller))
+
             if caller is None:
+                # We've been requested to halt
                 break
             else:
                 await caller.call()
+                self.changed.set()
 
 

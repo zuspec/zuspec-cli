@@ -7,8 +7,8 @@ echo "tests_unit_dir: $tests_unit_dir $zuspec_dir"
 export PYTHONPATH=${zuspec_dir}/src:${zuspec_dir}/tests
 
 #GDB="gdb --args "
-#VALGRIND="valgrind --tool=memcheck "
+#VALGRIND="valgrind --tool=memcheck --num-callers=96 "
 #export PYTHONMALLOC=malloc
 
-$GDB $VALGRIND ${zuspec_dir}/packages/python/bin/python -m unittest unit.test_model_eval.TestModelEval.test_runner_basics
+$GDB $VALGRIND ${zuspec_dir}/packages/python/bin/python -m unittest unit.test_model_eval.TestModelEval.test_runner_simple_parallel_target
 
