@@ -16,7 +16,7 @@ jobs:
       run: |
         # Install dependencies required to load ivpm.yaml file
         python3 -m pip install ivpm
-        python3 -m ivpm update
+        python3 -m ivpm update -a
         export BUILD_NUM=$GITHUB_RUN_ID
         ./packages/python/bin/python3 setup.py bdist_wheel --universal
 
