@@ -14,7 +14,7 @@ setup(
   package_dir = {'' : 'src'},
   author = "Matthew Ballance",
   author_email = "matt.ballance@gmail.com",
-  description = "
+  description = "Co-specification of hardware, software, design, and test behavior",
   long_description="""
   Co-specification of hardware, software, design, and test behavior
   """,
