@@ -31,12 +31,18 @@ setup(
   ],
   install_requires=[
     'pytypeworks',
-    'pyarl-dataclasses',
-    'zuspec-arl-dm',
-    'zuspec-arl-eval',
+    'zuspec-dataclasses',
+    'pyvsc-dataclasses',
     'fltools',
     'fusesoc',
-    'pyyaml'
+    'pyyaml',
+    'vsc-dm',
+    'vsc-solvers',
+    'zuspec-arl-dm',
+    'zuspec-arl-eval',
+    'zuspec-be-sw',
+    'zuspec-fe-parser',
+    'zuspec-parser'
   ],
 )
 
