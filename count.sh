@@ -53,8 +53,8 @@ count=`expr $count + $zsp_be_sw_py`
 
 zsp_fe_parser_h=$(cat $(find packages/zuspec-fe-parser/src -name '*.h') | wc -l)
 zsp_fe_parser_cpp=$(cat $(find packages/zuspec-fe-parser/src -name '*.cpp') | wc -l)
-#zsp_fe_parser_py=$(cat $(find packages/zuspec-fe-parser/python -name '*.p*') | wc -l)
-zsp_fe_parser_py=0
+zsp_fe_parser_py=$(cat $(find packages/zuspec-fe-parser/python -name '*.p*') | wc -l)
+#zsp_fe_parser_py=0
 
 count=`expr $count + $zsp_fe_parser_h`
 count=`expr $count + $zsp_fe_parser_cpp`

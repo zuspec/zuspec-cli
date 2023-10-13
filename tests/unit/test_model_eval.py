@@ -22,7 +22,7 @@
 import os
 import asyncio
 import zuspec
-from unit.test_base import TestBase
+from .test_base import TestBase
 from zuspec.arl_spec_loader import ArlSpecLoader
 from zuspec.loader import Loader
 from zuspec.impl.runner_backend_async_io import RunnerBackendAsyncIO

@@ -47,6 +47,7 @@ class TestMethodDiscovery(TestBase):
     def cls_method(self):
         pass
 
+
     def test_find_inner_method(self):
 
         def my_method(a, b, c):
@@ -61,5 +62,6 @@ class TestMethodDiscovery(TestBase):
     def test_find_glbl_method(self):
 
         self.assertIsNotNone(find_method(inspect.currentframe(), "glbl_method"))
+
 
 
