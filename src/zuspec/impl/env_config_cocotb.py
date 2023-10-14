@@ -1,5 +1,5 @@
 #****************************************************************************
-#* task_build_task_caller.py
+#* env_config.py
 #*
 #* Copyright 2022 Matthew Ballance and Contributors
 #*
@@ -19,18 +19,29 @@
 #*     Author: 
 #*
 #****************************************************************************
-import zsp_arl_dm.core as arl_dm
-from .task_caller import TaskCaller
+import sys
 
-class TaskBuildTaskCaller(object):
+class EnvConfigCocotb(object):
 
-    def __init__(self):
+    def __init__(self, backend):
+        self._backend = backend
+        self._ctxt = None
+
+    def getContext(self):
+        if self._ctxt is None:
+            pass
+        return self._ctxt
         pass
 
-    def build(self, 
-              func_t : arl_dm.DataTypeFunction,
-              is_solve : bool,
-              func : callable):
-        print("isTarget: %d" % (not is_solve))
-        return TaskCaller(func, not is_solve)
+    def getRunnerBackend(self):
+        return self._backend
+
+    @classmethod
+    def create(cls):
+        if "cocotb" in sys.modules.keys():
+            from .runner_backend_cocotb import RunnerBackendCocotb
+            return EnvConfigCocotb(RunnerBackendCocotb())
+        else:
+            return None
+
 

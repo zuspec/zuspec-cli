@@ -140,26 +140,12 @@ class TestModelEval(TestBase):
             print("doit")
             doit_called += 1
 
-        self.enableDebug(True)
+        self.enableDebug(False)
 
-        loader = Loader()
-        ctxt = loader.load(content)
+        self.loadContent(content)
 
-        print("--> backend", flush=True)
-        backend = RunnerBackendAsyncIO()
-        print("<-- backend", flush=True)
-
-        runner = zuspec.Runner(
-            "pss_top",
-            None,
-            ctxt=ctxt,
-            backend=backend)
-
-        loop = asyncio.get_event_loop()
-
-        print("--> run", flush=True)
-        loop.run_until_complete(runner.run("pss_top::Entry"))
-        print("<-- run", flush=True)
+        actor = zuspec.Actor("pss_top", "pss_top::Entry")
+        self.runActor(actor)
 
         self.assertEqual(doit_called, 1)
 
@@ -181,25 +167,16 @@ class TestModelEval(TestBase):
 
         async def doit():
             nonlocal doit_called
-            print("doit")
+            print("doit", flush=True)
             doit_called += 1
 
         self.enableDebug(False)
 
-        loader = Loader()
-        ctxt = loader.load(content)
+        self.loadContent(content)
 
-        backend = RunnerBackendAsyncIO()
+        actor = zuspec.Actor("pss_top", "pss_top::Entry")
 
-        runner = zuspec.Runner(
-            "pss_top",
-            None,
-            ctxt=ctxt,
-            backend=backend)
-
-        loop = asyncio.get_event_loop()
-
-        loop.run_until_complete(runner.run("pss_top::Entry"))
+        self.runActor(actor)
 
         self.assertEqual(doit_called, 1)
 

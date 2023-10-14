@@ -1,5 +1,5 @@
 #****************************************************************************
-#* task_build_task_caller.py
+#* env_config_test.py
 #*
 #* Copyright 2022 Matthew Ballance and Contributors
 #*
@@ -19,18 +19,29 @@
 #*     Author: 
 #*
 #****************************************************************************
-import zsp_arl_dm.core as arl_dm
-from .task_caller import TaskCaller
+from zuspec.impl.runner_backend_async_io import RunnerBackendAsyncIO
+from zuspec.loader import Loader
 
-class TaskBuildTaskCaller(object):
+class EnvConfigTest(object):
 
     def __init__(self):
+        self._backend = RunnerBackendAsyncIO()
+        self._context = None
         pass
 
-    def build(self, 
-              func_t : arl_dm.DataTypeFunction,
-              is_solve : bool,
-              func : callable):
-        print("isTarget: %d" % (not is_solve))
-        return TaskCaller(func, not is_solve)
+    def getRunnerBackend(self):
+        return self._backend
+    
+    def getContext(self):
+        if self._context is None:
+            raise Exception("No content loaded")
+        return self._context
+
+    def loadContent(self, content):
+        loader = Loader()
+        self._context = loader.load(content)
+
+    @classmethod
+    def create(cls):
+        return EnvConfigTest()
 

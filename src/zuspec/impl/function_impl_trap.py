@@ -1,5 +1,5 @@
 #****************************************************************************
-#* task_build_task_caller.py
+#* function_impl_trap.py
 #*
 #* Copyright 2022 Matthew Ballance and Contributors
 #*
@@ -19,18 +19,16 @@
 #*     Author: 
 #*
 #****************************************************************************
-import zsp_arl_dm.core as arl_dm
-from .task_caller import TaskCaller
 
-class TaskBuildTaskCaller(object):
+class FunctionImplTrap(object):
 
-    def __init__(self):
+    def __init__(self, func):
+        self._func = func
         pass
 
-    def build(self, 
-              func_t : arl_dm.DataTypeFunction,
-              is_solve : bool,
-              func : callable):
-        print("isTarget: %d" % (not is_solve))
-        return TaskCaller(func, not is_solve)
+    def call(self, thread, params):
+        raise Exception("Function %s not implemented" % self._func.name())
+
+    def call_target(self, thread, params):
+        raise Exception("Function %s not implemented" % self._func.name())
 

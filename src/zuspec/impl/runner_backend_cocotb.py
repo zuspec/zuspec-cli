@@ -1,5 +1,5 @@
 #****************************************************************************
-#* task_build_task_caller.py
+#* runner_backend_cocotb.py
 #*
 #* Copyright 2022 Matthew Ballance and Contributors
 #*
@@ -19,18 +19,9 @@
 #*     Author: 
 #*
 #****************************************************************************
-import zsp_arl_dm.core as arl_dm
-from .task_caller import TaskCaller
 
-class TaskBuildTaskCaller(object):
+class RunnerBackendCocotb(object):
 
     def __init__(self):
         pass
-
-    def build(self, 
-              func_t : arl_dm.DataTypeFunction,
-              is_solve : bool,
-              func : callable):
-        print("isTarget: %d" % (not is_solve))
-        return TaskCaller(func, not is_solve)
 

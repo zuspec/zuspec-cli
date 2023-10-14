@@ -21,6 +21,7 @@
 #****************************************************************************
 from .impl.ctxt import Ctxt
 from .impl.deferred_task_caller import DeferredTaskCaller
+from .impl.function_impl_trap import FunctionImplTrap
 from .impl.runner_thread import RunnerThread
 from .impl.task_caller import TaskCaller
 from .impl.task_build_task_caller import TaskBuildTaskCaller
@@ -56,13 +57,13 @@ class Runner(arl_eval.EvalBackend):
         self._thread_data = []
         self._active_coroutines = []
 
-        pss_top_t = self._ctxt.findDataTypeComponent(root_comp)
-        if pss_top_t is None:
+        self._pss_top_t = self._ctxt.findDataTypeComponent(root_comp)
+        if self._pss_top_t is None:
             raise Exception("Failed to find root component type \"%s\"" % root_comp)
         
-        build_ctxt = arl_dm.ModelBuildContext(self._ctxt)
-        self.pss_top = pss_top_t.mkRootField(build_ctxt, "pss_top", False)
-        self.pss_top.initCompTree()
+#        build_ctxt = arl_dm.ModelBuildContext(self._ctxt)
+#        self.pss_top = pss_top_t.mkRootField(build_ctxt, "pss_top", False)
+#        self.pss_top.initCompTree()
         
         pass
 
@@ -84,7 +85,7 @@ class Runner(arl_eval.EvalBackend):
             vsc_solvers_f,
             self._ctxt,
             randstate,
-            self.pss_top,
+            self._pss_top_t,
             root_action_t,
             self)
 
@@ -97,36 +98,51 @@ class Runner(arl_eval.EvalBackend):
             else:
                 await self._backend.joinAny(self._active_coroutines)
 
-                tmp = self._active_coroutines
-                self._active_coroutines = []
+                tmp = self._active_coroutines.copy()
+                self._active_coroutines.clear()
                 for t in tmp:
                     if not self._backend.taskIsDone(t):
+                        print("Coroutine not yet done", flush=True)
                         self._active_coroutines.append(t)
+                    else:
+                        print("Coroutine is done", flush=True)
 
         if len(self._active_coroutines) > 0:
             raise Exception("runner ending with active coroutines")
         
-        print("<-- run")
 
     def map_functions(self, evaluator):
         if self._executor_if is None:
             self._executor_func_m[None] = {}
             func_m = self._executor_func_m[None]
-            for f in evaluator.getFunctions():
-                print("Function: %s" % f.name())
-                caller_f = inspect.currentframe().f_back
+            for solve in [True, False]:
+                functions = evaluator.getSolveFunctions() if solve else evaluator.getTargetFunctions()
+                for f in functions:
+                    print("Function: %s" % f.name())
+                    caller_f = inspect.currentframe().f_back
 
-                while caller_f is not None:
-                    if f.name() in caller_f.f_locals.keys():
-                        self._executor_func_m[None]
-                        # TODO: should probably check args
-                        print("Found in locals")
-                        assoc_data = TaskBuildTaskCaller().build(
-                                f, caller_f.f_locals[f.name()])
+                    while caller_f is not None:
+                        if f.name() in caller_f.f_locals.keys():
+                            self._executor_func_m[None]
+                            # TODO: should probably check args
+                            print("Found in locals")
+                            assoc_data = TaskBuildTaskCaller().build(
+                                    f, 
+                                    solve,
+                                    caller_f.f_locals[f.name()])
+                            f.setAssociatedData(assoc_data)
+                        elif f.name() in caller_f.f_globals.keys():
+                            print("Found in globals")
+                            assoc_data = TaskBuildTaskCaller().build(
+                                    f, 
+                                    solve,
+                                    caller_f.f_globals[f.name()])
+                            f.setAssociatedData(assoc_data)
+                        caller_f = caller_f.f_back
+                    if f.getAssociatedData() is None:
+                        # Add a trap function
+                        assoc_data = FunctionImplTrap(f)
                         f.setAssociatedData(assoc_data)
-                    elif f.name() in caller_f.f_globals.keys():
-                        print("Found in globals")
-                    caller_f = caller_f.f_back
         else:
             print("TODO: search executors")
 

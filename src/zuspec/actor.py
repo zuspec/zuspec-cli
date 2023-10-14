@@ -1,5 +1,5 @@
 #****************************************************************************
-#* task_build_task_caller.py
+#* actor.py
 #*
 #* Copyright 2022 Matthew Ballance and Contributors
 #*
@@ -19,18 +19,22 @@
 #*     Author: 
 #*
 #****************************************************************************
-import zsp_arl_dm.core as arl_dm
-from .task_caller import TaskCaller
+from .env_config import EnvConfig
+from .runner import Runner
 
-class TaskBuildTaskCaller(object):
+class Actor(object):
 
-    def __init__(self):
-        pass
+    def __init__(self, comp_t, action_t):
+        self._comp_t = comp_t
+        self._action_t = action_t
 
-    def build(self, 
-              func_t : arl_dm.DataTypeFunction,
-              is_solve : bool,
-              func : callable):
-        print("isTarget: %d" % (not is_solve))
-        return TaskCaller(func, not is_solve)
+    async def run(self):
+        envcfg = EnvConfig.inst()
 
+        runner = Runner(
+            self._comp_t,
+            None,
+            ctxt=envcfg.getContext(),
+            backend=envcfg.getRunnerBackend())
+
+        await runner.run(self._action_t)

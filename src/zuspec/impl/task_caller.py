@@ -45,7 +45,7 @@ class TaskCaller(object):
             ret = self._ret_xformer(thread, ret)
             thread.setResult(ret)
         else:
-            thread.setResult(thread.mkEvalResultKind(zsp_eval.EvalResultKind.Void))
+            thread.setResult(thread.mkValRefInt(0, False, 1))
 
     async def call_target(self, thread, params):
         func_params = []
@@ -58,4 +58,4 @@ class TaskCaller(object):
             ret = self._ret_xformer(thread, ret)
             thread.setResult(ret)
         else:
-            thread.setResult(thread.mkEvalResultKind(zsp_eval.EvalResultKind.Void))
+            thread.setResult(thread.mkValRefInt(0, False, 1))

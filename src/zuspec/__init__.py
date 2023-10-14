@@ -24,6 +24,8 @@ import os
 #from .loader import *
 #from .zuspec import *
 from .runner import Runner
+from .actor import Actor
+from .env_config import EnvConfig
 
 def _init():
     """Initializes libraries used by Zuspec"""
