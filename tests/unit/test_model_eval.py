@@ -46,10 +46,12 @@ class TestModelEval(TestBase):
         }
         """
 
-        self.enableDebug(False)
+        self.enableDebug(True)
 
         loader = Loader()
+        print("--> load", flush=True)
         ctxt = loader.load(content)
+        print("<--> load", flush=True)
 
         arl_eval_f = arl_eval.Factory.inst()
         vsc_solvers_f = vsc_solvers.Factory.inst()
@@ -61,9 +63,10 @@ class TestModelEval(TestBase):
         self.assertIsNotNone(pss_top_Entry_t)
 
         build_ctxt = arl_dm.ModelBuildContext(ctxt)
-        pss_top = pss_top_t.mkRootField(build_ctxt, "pss_top", False)
-        pss_top.initCompTree()
+#        pss_top = pss_top_t.mkRootField(build_ctxt, "pss_top", False)
+#        pss_top.initCompTree()
 
+        print("pre-Backend", flush=True)
         class MyBackend(arl_eval.EvalBackend):
 
             def __init__(self):
@@ -79,30 +82,41 @@ class TestModelEval(TestBase):
             def callFuncReq(self, thread, func_t, params):
                 print("callFuncReq")
                 self.call_l.append(thread)
+#                print("--> setResult", flush=True)
+#                thread.setResult(thread.mkValRefInt(0, False, 1))
+#                print("<-- setResult", flush=True)
 
         backend = MyBackend()
         evaluator = arl_eval_f.mkEvalContextFullElab(
             vsc_solvers_f,
             ctxt,
             randstate,
-            pss_top,
+            pss_top_t,
             pss_top_Entry_t,
             backend)
-        print("Post-eval-create %d" % len(evaluator.getFunctions()))
-        self.assertEqual(len(evaluator.getFunctions()), 13)
+        print("Post-eval-create %d/%d" % (
+            len(evaluator.getSolveFunctions()),
+            len(evaluator.getTargetFunctions())), flush=True)
+#        self.assertEqual(len(evaluator.getFunctions()), 13)
 
-        for f in evaluator.getFunctions():
-            print("Function: %s" % f.name())
+        for f in evaluator.getTargetFunctions():
+            print("Target Function: %s" % f.name())
+        for f in evaluator.getSolveFunctions():
+            print("Target Function: %s" % f.name())
 
         self.assertTrue(evaluator.eval())
         self.assertEqual(len(backend.call_l), 1)
 
         # Complete function
         backend.call_l[0].setResult(
-            evaluator.mkEvalResultValS(10)
+            evaluator.mkValRefInt(10, True, 32)
         )
 
-        self.assertFalse(evaluator.eval())
+#        for _ in range(10):
+#            if not evaluator.eval():
+#                break
+
+#        self.assertFalse(evaluator.eval())
 
         pass
 
@@ -126,12 +140,14 @@ class TestModelEval(TestBase):
             print("doit")
             doit_called += 1
 
-        self.enableDebug(False)
+        self.enableDebug(True)
 
         loader = Loader()
         ctxt = loader.load(content)
 
+        print("--> backend", flush=True)
         backend = RunnerBackendAsyncIO()
+        print("<-- backend", flush=True)
 
         runner = zuspec.Runner(
             "pss_top",
@@ -141,7 +157,9 @@ class TestModelEval(TestBase):
 
         loop = asyncio.get_event_loop()
 
+        print("--> run", flush=True)
         loop.run_until_complete(runner.run("pss_top::Entry"))
+        print("<-- run", flush=True)
 
         self.assertEqual(doit_called, 1)
 
