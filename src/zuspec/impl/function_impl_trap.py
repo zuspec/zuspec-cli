@@ -22,8 +22,9 @@
 
 class FunctionImplTrap(object):
 
-    def __init__(self, func):
+    def __init__(self, func, is_solve):
         self._func = func
+        self._is_async = not is_solve
         pass
 
     def call(self, thread, params):

@@ -119,29 +119,39 @@ class Runner(arl_eval.EvalBackend):
                 functions = evaluator.getSolveFunctions() if solve else evaluator.getTargetFunctions()
                 for f in functions:
                     print("Function: %s" % f.name())
-                    caller_f = inspect.currentframe().f_back
+                    names = [f.name()]
+                    if f.name().find("::") != -1:
+                        names.append(f.name().replace(':','_'))
+                        names.append(f.name()[f.name().rfind("::")+2:])
+                    for name in names:
+                        caller_f = inspect.currentframe().f_back
 
-                    while caller_f is not None:
-                        if f.name() in caller_f.f_locals.keys():
-                            self._executor_func_m[None]
-                            # TODO: should probably check args
-                            print("Found in locals")
-                            assoc_data = TaskBuildTaskCaller().build(
+                        while caller_f is not None:
+                            if name in caller_f.f_locals.keys():
+                                self._executor_func_m[None]
+                                # TODO: should probably check args
+                                print("Found in locals")
+                                assoc_data = TaskBuildTaskCaller().build(
                                     f, 
                                     solve,
-                                    caller_f.f_locals[f.name()])
-                            f.setAssociatedData(assoc_data)
-                        elif f.name() in caller_f.f_globals.keys():
-                            print("Found in globals")
-                            assoc_data = TaskBuildTaskCaller().build(
+                                    caller_f.f_locals[name])
+                                f.setAssociatedData(assoc_data)
+                                break
+                            elif name in caller_f.f_globals.keys():
+                                print("Found in globals")
+                                assoc_data = TaskBuildTaskCaller().build(
                                     f, 
                                     solve,
-                                    caller_f.f_globals[f.name()])
-                            f.setAssociatedData(assoc_data)
-                        caller_f = caller_f.f_back
+                                    caller_f.f_globals[name])
+                                f.setAssociatedData(assoc_data)
+                                break
+                            caller_f = caller_f.f_back
+                        if f.getAssociatedData() is not None:
+                            break
+
                     if f.getAssociatedData() is None:
                         # Add a trap function
-                        assoc_data = FunctionImplTrap(f)
+                        assoc_data = FunctionImplTrap(f, solve)
                         f.setAssociatedData(assoc_data)
         else:
             print("TODO: search executors")
@@ -179,6 +189,6 @@ class Runner(arl_eval.EvalBackend):
             else:
                 task_caller.call(thread, params)
         else:
-            print("No task caller")
+            print("No task caller for %s" % func_t.name())
 
 

@@ -182,6 +182,38 @@ class TestModelEval(TestBase):
 
         print("-- Test Done --")
 
+    def test_runner_write32(self):
+        content = """
+        import addr_reg_pkg::*;
+        import target function void doit();
+
+        component pss_top {
+            action Entry { 
+                exec body {
+                    write32();
+                }
+            }
+        }
+        """
+
+        write_called = 0
+
+        async def addr_reg_pkg__write32():
+            nonlocal write_called
+            print("write32 Called")
+            write_called += 1
+            pass
+
+        self.enableDebug(False)
+
+        self.loadContent(content)
+
+        actor = zuspec.Actor("pss_top", "pss_top::Entry")
+
+        self.runActor(actor)
+
+        self.assertEqual(write_called, 1)
+
     def test_runner_simple_sequence_solve(self):
         content = """
 //        function void doit();

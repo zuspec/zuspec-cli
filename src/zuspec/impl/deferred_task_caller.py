@@ -35,7 +35,7 @@ class DeferredTaskCaller(object):
         if self._ret_xformer is not None:
             self._thread.setResult(self._ret_xformer(self._thread, ret))
         else:
-            self._thread.setResult(self._thread.mkEvalResultKind(zsp_eval.EvalResultKind.Void))
+            self._thread.setResult(self._thread.mkValRefInt(0, False, 1))
 
 
 
