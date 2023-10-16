@@ -177,8 +177,11 @@ class Runner(arl_eval.EvalBackend):
         print("leaveAction: %s" % action.name())
 
     def callFuncReq(self, thread, func_t, params):
-        print("callFuncReq")
+        print("callFuncReq %d" % len(params))
         task_caller = func_t.getAssociatedData()
+
+        for p in params:
+            print("Param: %s" % str(p.type()))
 
         if task_caller is not None:
             print("Invoking the function")

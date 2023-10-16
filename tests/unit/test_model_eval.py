@@ -190,7 +190,7 @@ class TestModelEval(TestBase):
         component pss_top {
             action Entry { 
                 exec body {
-                    write32();
+                    write32(10, 20);
                 }
             }
         }
@@ -198,9 +198,9 @@ class TestModelEval(TestBase):
 
         write_called = 0
 
-        async def addr_reg_pkg__write32():
+        async def addr_reg_pkg__write32(addr, data):
             nonlocal write_called
-            print("write32 Called")
+            print("write32(%d,%d) Called" % (addr, data))
             write_called += 1
             pass
 

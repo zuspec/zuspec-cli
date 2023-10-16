@@ -19,6 +19,7 @@
 #*     Author: 
 #*
 #****************************************************************************
+from zsp_arl_dm import ValRefToPyVal
 import zsp_arl_eval.core as zsp_eval
 from .deferred_task_caller import DeferredTaskCaller
 from .runner_thread import RunnerThread
@@ -49,8 +50,8 @@ class TaskCaller(object):
 
     async def call_target(self, thread, params):
         func_params = []
-        for i,p in enumerate(params):
-            func_params.append(self._param_xformers[i](p))
+        for p in params:
+            func_params.append(ValRefToPyVal().toPyVal(p))
 
         ret = await self._func(*func_params)
 
