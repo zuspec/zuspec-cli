@@ -1,5 +1,5 @@
 #****************************************************************************
-#* __main__.py
+#* output.py
 #*
 #* Copyright 2022 Matthew Ballance and Contributors
 #*
@@ -19,28 +19,39 @@
 #*     Author: 
 #*
 #****************************************************************************
-import argparse
-import pkgutil
-import importlib
-from .cmd import CmdRegistry
+import io
 
-def getparser():
-    parser = CmdRegistry.inst().getParser()
-    return parser
+class Output(object):
 
-def main():
-    # TODO: Process filelists
+    def __init__(self, out=None):
+        if out is not None:
+            self._out = out
+        else:
+            self._out = io.StringIO()
+        self._ind = ""
 
-    # Load extensions
-    for finder, name, ispkg in pkgutil.iter_modules():
-        if name.startswith("zsp_ext_"):
-            m = importlib.import_module(name)
+    def getvalue(self):
+        if hasattr(self._out, "getvalue"):
+            return self._out.getvalue()
+        else:
+            raise Exception("Not operating on a string")
 
-    parser = getparser()
+    def println(self, s):
+        self._out.write(self._ind)
+        self._out.write(s)
+        self._out.write("\n")
+    
+    
+    def inc_ind(self):
+        self._ind += "    "
 
-    args = parser.parse_args()
-    args.func(args)
+    def ind(self):
+        return self._ind
+    
+    def dec_ind(self):
+        if len(self._ind) > 4:
+            self._ind = self._ind[4:]
+        else:
+            self._ind = ""
 
 
-if __name__ == "__main__":
-    main()
