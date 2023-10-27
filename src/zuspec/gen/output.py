@@ -29,18 +29,30 @@ class Output(object):
         else:
             self._out = io.StringIO()
         self._ind = ""
+        self._comma = []
 
     def getvalue(self):
         if hasattr(self._out, "getvalue"):
             return self._out.getvalue()
         else:
             raise Exception("Not operating on a string")
+        
+    def push_comma(self, c):
+        self._comma.append(c)
 
-    def println(self, s):
+    def pop_comma(self):
+        self._comma.pop()
+
+    def comma(self):
+        return "," if len(self._comma) > 0 and self._comma[-1] else ""
+
+    def println(self, s=""):
         self._out.write(self._ind)
         self._out.write(s)
         self._out.write("\n")
-    
+
+    def write(self, s):
+        self._out.write(s) 
     
     def inc_ind(self):
         self._ind += "    "
