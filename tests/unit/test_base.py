@@ -26,7 +26,7 @@ import shutil
 import debug_mgr.core as dmgr
 import zuspec
 from unittest import TestCase
-from .env_config_test import EnvConfigTest
+#from .env_config_test import EnvConfigTest
 
 
 class TestBase(TestCase):
@@ -40,9 +40,8 @@ class TestBase(TestCase):
         self._dmgr = dmgr.Factory.inst().getDebugMgr()
         self._dmgr.enable(False)
 
-        self.envcfg = EnvConfigTest()
-
-        zuspec.EnvConfig.init(self.envcfg)
+#        self.envcfg = EnvConfigTest()
+#        zuspec.EnvConfig.init(self.envcfg)
 
         Ctxt.inst()
 
@@ -72,12 +71,12 @@ class TestBase(TestCase):
         with open(full_path, "w") as fp:
             fp.write(content)
 
-    def loadContent(self, content):
-        self.envcfg.loadContent(content)
+#    def loadContent(self, content):
+#        self.envcfg.loadContent(content)
 
-    def runActor(self, actor):
-        loop = asyncio.get_event_loop()
-        loop.run_until_complete(actor.run())
+#    def runActor(self, actor):
+#        loop = asyncio.get_event_loop()
+#        loop.run_until_complete(actor.run())
 
 
     def enableDebug(self, en):
