@@ -8,7 +8,7 @@ if "BUILD_NUM" in os.environ.keys():
     version += "." + os.environ["BUILD_NUM"]
 
 setup(
-  name = "zuspec",
+  name = "zuspec-cli",
   version=version,
   packages=find_namespace_packages(where='src'),
   package_dir = {'' : 'src'},
@@ -20,7 +20,7 @@ setup(
   """,
   license = "Apache 2.0",
   keywords = ["PSS", "Functional Verification", "RTL", "Verilog", "SystemVerilog"],
-  url = "https://github.com/zuspec/zuspec",
+  url = "https://github.com/zuspec/zuspec-cli",
   entry_points={
     'console_scripts': [
       'zuspec = zuspec.__main__:main'
