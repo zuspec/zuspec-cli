@@ -34,6 +34,7 @@ def main():
     # Load extensions
     for finder, name, ispkg in pkgutil.iter_modules():
         if name.startswith("zsp_ext_"):
+            print("Load extension: %s" % name)
             m = importlib.import_module(name)
 
     parser = getparser()

@@ -78,5 +78,9 @@ class CmdParseBase(object):
 
     @staticmethod
     def addFileArgs(parser : argparse.ArgumentParser):
-        parser.add_argument("files", nargs="+")
+        parser.add_argument("-f", "--filelist",
+            help="Specify a list of PSS files. Relative paths resolved with respect to launch directory")
+        parser.add_argument("-F", "--filelist-rel",
+            help="Specify a list of PSS files. Relative paths resolved with respect to filelist")
+        parser.add_argument("files", nargs="*")
 
