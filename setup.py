@@ -1,11 +1,18 @@
 
 import os
+import sys
 from setuptools import setup, find_namespace_packages
 
 version="0.0.1"
 
-if "BUILD_NUM" in os.environ.keys():
-    version += "." + os.environ["BUILD_NUM"]
+proj_dir = os.path.dirname(os.path.abspath(__file__))
+
+try:
+    sys.path.insert(0, os.path.join(proj_dir, "src/zuspec"))
+    from __build_num__ import BUILD_NUM
+    version += ".%s" % str(BUILD_NUM)
+except ImportError as e:
+    print("zuspec-cli: No build-num (%s)" % str(e)))
 
 setup(
   name = "zuspec-cli",
