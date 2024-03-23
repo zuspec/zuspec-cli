@@ -20,7 +20,7 @@ jobs:
         python3 -m pip install setuptools wheel
         #python3 -m ivpm update -a
         echo "BUILD_NUM=${BUILD_NUM}" > src/zuspec/__build_num__.py
-        ./packages/python/bin/python3 setup.py bdist_wheel --universal
+        python3 setup.py bdist_wheel --universal
 
         #    - name: Build Docs
         #      run: |
