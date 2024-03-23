@@ -12,7 +12,7 @@ try:
     from __build_num__ import BUILD_NUM
     version += ".%s" % str(BUILD_NUM)
 except ImportError as e:
-    print("zuspec-cli: No build-num (%s)" % str(e)))
+    print("zuspec-cli: No build-num (%s)" % str(e))
 
 setup(
   name = "zuspec-cli",
