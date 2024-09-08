@@ -31,6 +31,17 @@ def getparser():
 def main():
     # TODO: Process filelists
 
+    import sys
+    if sys.version_info < (3, 10):
+        from importlib_metadata import entry_points
+    else:
+        from importlib.metadata import entry_points
+
+    discovered_plugins = entry_points(group='zuspec.ext')
+
+    for plugin in discovered_plugins:
+        plugin.load()
+
     # Load extensions
     for finder, name, ispkg in pkgutil.iter_modules():
         if name.startswith("zsp_ext_"):
