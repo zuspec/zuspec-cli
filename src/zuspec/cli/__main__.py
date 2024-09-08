@@ -22,7 +22,7 @@
 import argparse
 import pkgutil
 import importlib
-from .cmd import CmdRegistry
+from . import CmdRegistry
 
 def getparser():
     parser = CmdRegistry.inst().getParser()
