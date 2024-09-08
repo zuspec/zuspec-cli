@@ -30,7 +30,7 @@ setup(
   url = "https://github.com/zuspec/zuspec-cli",
   entry_points={
     'console_scripts': [
-      'zuspec = zuspec.__main__:main'
+      'zuspec = zuspec.cli.__main__:main'
     ]
   },
   setup_requires=[

@@ -27,13 +27,11 @@ class CmdRegistry(object):
 
     def __init__(self):
         self._subcmd_factory_m = {}
-        self.addSubCommand("synth", self._addSynthCommand)
+#        self.addSubCommand("synth", self._addSynthCommand)
         pass
 
-    def addSubCommand(self, name, factory):
-        if name in self._subcmd_factory_m.keys():
-            raise Exception("Attempting to register duplicate command %s" % name)
-        self._subcmd_factory_m[name] = factory
+    def addSubCommand(self, cmd, cls):
+        self._subcmd_factory_m[cmd] = cls
 
     def getParser(self):
         parser = argparse.ArgumentParser()
@@ -44,7 +42,7 @@ class CmdRegistry(object):
             value(key, subparsers)
 
         return parser
-
+    
     def _addSynthCommand(self, name, subparsers):
         synth_cmd = subparsers.add_parser("synth",
             help="Process PSS and generate synthesized output")
