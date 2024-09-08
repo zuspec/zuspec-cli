@@ -17,7 +17,9 @@ except ImportError as e:
 setup(
   name = "zuspec-cli",
   version=version,
-  packages=find_namespace_packages(where='src'),
+  packages=find_namespace_packages(
+      where='src',
+      include="zuspec.cli"),
   package_dir = {'' : 'src'},
   author = "Matthew Ballance",
   author_email = "matt.ballance@gmail.com",
