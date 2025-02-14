@@ -92,16 +92,21 @@ package:
     deps:
     - name: pytypeworks
       url: https://github.com/fvutils/pytypeworks.git
+      dep-set: default-dev
     - name: pyvsc-dataclasses
       url: https://github.com/vsc-tools/pyvsc-dataclasses.git
+      dep-set: default-dev
     - name: zuspec-dataclasses
       url: https://github.com/zuspec/zuspec-dataclasses.git
     - name: vsc-dm
       url: https://github.com/vsc-tools/vsc-dm.git
+      dep-set: default-dev
     - name: vsc-solvers
       url: https://github.com/vsc-tools/vsc-solvers.git
+      dep-set: default-dev
     - name: zuspec-arl-dm
       url: https://github.com/zuspec/zuspec-arl-dm.git
+      dep-set: default-dev
     - name: zuspec-arl-eval
       url: https://github.com/zuspec/zuspec-arl-eval.git
     - name: zuspec-parser
@@ -110,10 +115,12 @@ package:
       url: https://github.com/zuspec/zuspec-fe-parser.git
     - name: zuspec-be-py
       url: https://github.com/zuspec/zuspec-be-py.git
+      dep-set: default-dev
     - name: zuspec-be-sw
       url: https://github.com/zuspec/zuspec-be-sw.git
     - name: fltools
       url: https://github.com/fvutils/fltools.git
+      dep-set: default-dev
     - name: fusesoc
       url: https://github.com/olofk/fusesoc.git
     - name: ninja
